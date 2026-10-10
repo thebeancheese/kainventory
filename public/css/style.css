@@ -26,7 +26,7 @@
 
   --radius: 14px;
   --radius-sm: 10px;
-  --logo-h: 96px; /* header logo height - change this one value */
+  --logo-h: 80px; /* header logo height - change this one value */
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
@@ -478,7 +478,7 @@ code { background: var(--gold-soft); color: var(--gold); padding: 0.15rem 0.5rem
 }
 
 @media (max-width: 560px) {
-  :root { --logo-h: 64px; }
+  :root { --logo-h: 60px; }
   .site-header { flex-wrap: wrap; justify-content: center; padding: 0.6rem 1rem; }
   nav { width: 100%; justify-content: center; overflow-x: auto; }
   .panel .btn { justify-self: stretch; }
