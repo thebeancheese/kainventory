@@ -28,7 +28,7 @@ function notify(title, message = '', type = 'ok') {
   const close = () => { el.classList.add('leaving'); setTimeout(() => el.remove(), 250); };
   el.querySelector('.toast-close').addEventListener('click', close);
   box.appendChild(el);
-  setTimeout(close, 4500);
+  setTimeout(close, type === 'error' ? 6500 : 4500);
 }
 
 // Header: live database status pill (uses /api/stats). Shows red if the server or database is unreachable.
@@ -262,7 +262,33 @@ async function loadCuisineChips() {
     console.error(err);
   }
 }
+let originalFormData = '';
 
+function getFormData() {
+  const form = $('#restaurantForm');
+
+  return JSON.stringify({
+    name: form.elements.namedItem('name').value,
+    cuisine: form.elements.namedItem('cuisine').value,
+    address: form.elements.namedItem('address').value,
+    rating: form.elements.namedItem('rating').value,
+    contact: form.elements.namedItem('contact').value
+  });
+}
+
+function closeRestaurantForm() {
+  const form = $('#restaurantForm');
+
+  if (form.dataset.saving === 'true') return;
+
+  if (getFormData() !== originalFormData) {
+    const discard = confirm('You have unsaved changes. Discard them?');
+
+    if (!discard) return;
+  }
+
+  $('#formDialog').close();
+}
 // Open the form (blank to add, filled to edit)
 function openForm(restaurant = null) {
   const form = $('#restaurantForm');
@@ -278,14 +304,49 @@ function openForm(restaurant = null) {
     form.rating.value = restaurant.rating ?? '';
     form.contact.value = restaurant.contact;
   }
+  originalFormData = getFormData();
+
   $('#formDialog').showModal();
   form.name.focus();
+}
+
+function validateRestaurant(payload) {
+  const name = payload.name.trim();
+  const cuisine = payload.cuisine.trim();
+  const address = payload.address.trim();
+  const rating = payload.rating.trim();
+  const contact = payload.contact.trim();
+
+  if (!name) return 'Restaurant name is required.';
+  if (!cuisine) return 'Cuisine is required.';
+
+  if (name.length > 100) return 'Restaurant name must be 100 characters or fewer.';
+  if (cuisine.length > 60) return 'Cuisine must be 60 characters or fewer.';
+  if (address.length > 200) return 'Address must be 200 characters or fewer.';
+  if (contact.length > 30) return 'Contact number must be 30 characters or fewer.';
+
+  if (rating !== '') {
+    const number = Number(rating);
+
+    if (!Number.isFinite(number) || number < 0 || number > 5) {
+      return 'Rating must be between 0 and 5.';
+    }
+
+    if (!Number.isInteger(number * 10)) {
+      return 'Rating must use increments of 0.1.';
+    }
+  }
+
+  return '';
 }
 
 // CREATE / UPDATE: send the form to the API
 async function saveRestaurant(event) {
   event.preventDefault();
+
   const form = event.target;
+
+  if (form.dataset.saving === 'true') return;
   const payload = {
     name: form.name.value,
     cuisine: form.cuisine.value,
@@ -293,10 +354,26 @@ async function saveRestaurant(event) {
     rating: form.rating.value,
     contact: form.contact.value
   };
-  const name = payload.name.trim();
-  const editing = Boolean(state.editingId);
-  const saveBtn = $('#saveBtn');
-  saveBtn.disabled = true;
+
+const name = payload.name.trim();
+const editing = Boolean(state.editingId);
+
+const error = validateRestaurant(payload);
+
+if (error) {
+  $('#formError').textContent = error;
+  return;
+}
+
+$('#formError').textContent = '';
+
+const saveBtn = $('#saveBtn');
+const originalText = saveBtn.textContent;
+form.dataset.saving = 'true';
+saveBtn.disabled = true;
+saveBtn.textContent = 'Saving...';
+saveBtn.setAttribute('aria-busy', 'true');
+
 
   try {
     const res = await fetch(editing ? `${API}/${state.editingId}` : API, {
@@ -322,10 +399,20 @@ async function saveRestaurant(event) {
     loadDbStatus();
     loadCuisineChips();
   } catch (err) {
-    $('#formError').textContent = err.message || 'Could not save. Try again.';
-    notify('Could not save', err.message || 'Please try again.', 'error');
+    const message = err.message || 'Something went wrong. Please try again.';
+
+    $('#formError').textContent = message;
+
+    notify(
+      'Restaurant not saved',
+      message,
+      'error'
+    );
   } finally {
+    form.dataset.saving = 'false';
     saveBtn.disabled = false;
+    saveBtn.textContent = originalText;
+    saveBtn.removeAttribute('aria-busy');
   }
 }
 
@@ -352,7 +439,11 @@ async function deleteRestaurant(id) {
     const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
     const body = await res.json();
     if (!res.ok) throw new Error(body.error);
-    notify('Restaurant deleted', `"${name}" was removed.`, 'delete');
+    notify(
+      'Restaurant deleted successfully',
+      `"${name}" has been removed from the directory.`,
+      'delete'
+    );
     if (state.rows.length === 1 && state.page > 1) state.page -= 1;
     loadRestaurants();
     loadDbStatus();
@@ -402,7 +493,11 @@ function showDetails(r) {
 // Wire up the restaurant page
 function initRestaurantPage() {
   $('#addBtn').addEventListener('click', () => openForm());
-  $('#cancelBtn').addEventListener('click', () => $('#formDialog').close());
+  $('#cancelBtn').addEventListener('click', closeRestaurantForm);
+  $('#formDialog').addEventListener('cancel', (event) => {
+    event.preventDefault();
+    closeRestaurantForm();
+  });
   $('#restaurantForm').addEventListener('submit', saveRestaurant);
 
   // Search with a short typing delay
@@ -431,7 +526,16 @@ function initRestaurantPage() {
   });
 
   document.querySelectorAll('dialog').forEach((dlg) =>
-    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); }));
+    dlg.addEventListener('click', (e) => {
+      if (e.target !== dlg) return;
+
+      if (dlg.id === 'formDialog') {
+        closeRestaurantForm();
+      } else {
+        dlg.close();
+      }
+    })
+  );
 
   loadRestaurants();
   loadCuisineChips();

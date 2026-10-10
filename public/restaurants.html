@@ -74,13 +74,21 @@
   <dialog id="formDialog">
     <form id="restaurantForm" method="dialog" novalidate>
       <h2 id="formTitle">Add restaurant</h2>
-
-      <label>Name
+      <p class="form-hint">
+        Fields marked with <span class="required-mark">*</span> are required.
+      </p>
+      <label>
+        <span>Name <span class="required-mark" aria-hidden="true">*</span></span>
         <input name="name" required maxlength="100" autocomplete="off">
       </label>
-      <label>Cuisine
-        <input name="cuisine" required maxlength="60" placeholder="Filipino, Japanese, Italian..." autocomplete="off">
+
+      <label>
+        <span>Cuisine <span class="required-mark" aria-hidden="true">*</span></span>
+        <input name="cuisine" required maxlength="60"
+              placeholder="Filipino, Japanese, Italian..."
+              autocomplete="off">
       </label>
+
       <label>Address
         <input name="address" maxlength="200" autocomplete="off">
       </label>
