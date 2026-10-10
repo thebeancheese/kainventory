@@ -133,8 +133,16 @@ nav a.active::after { transform: scaleX(1); }
 .btn.accent { background: #fff; color: var(--on-gold); box-shadow: 0 6px 18px rgba(255, 255, 255, 0.12); }
 .btn.accent:hover { background: #ece8da; }
 
-.btn.danger { background: #ef4444; color: #fff; box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3); }
-.btn.danger:hover { background: #f87171; }
+.btn.danger {
+  background: #dc2626;
+  color: #fff;
+  box-shadow: none;
+}
+
+.btn.danger:hover {
+  background: #ef4444;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
 
 /* ---------- Hero ---------- */
 .hero, .page-hero {
@@ -236,8 +244,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--gold); backgrou
 
 /* ---------- Restaurant list: spacious ticket rows ---------- */
 .table-wrap { background: transparent; border: 0; box-shadow: none; overflow-x: auto; }
-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-th, td { text-align: left; padding: 1.2rem 1.25rem; vertical-align: middle; color: #e9e5d6; }
+table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+th, td { text-align: left; padding: 0.85rem 1rem; vertical-align: middle; color: #e9e5d6; }
 th {
   padding-top: 0.25rem; padding-bottom: 0.25rem;
   font-size: 0.82rem; font-weight: 600; color: var(--muted);
@@ -301,10 +309,17 @@ tbody tr:has(.rating.ok) td:first-child { border-left-color: rgba(168, 163, 146,
 /* ---------- Row actions: calm until you point at the row ---------- */
 .actions { white-space: nowrap; text-align: right; }
 .link {
-  background: transparent; border: 1px solid transparent; cursor: pointer;
-  font: 700 0.88rem 'DM Sans', sans-serif; color: var(--muted);
-  padding: 0.4rem 0.85rem; border-radius: 8px; opacity: 0.55;
-  transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  font: 700 0.88rem 'DM Sans', sans-serif;
+  color: var(--ink);
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  opacity: 1;
+  transition: background 0.15s ease,
+              color 0.15s ease,
+              border-color 0.15s ease;
 }
 tbody tr:hover .link, .link:focus-visible { opacity: 1; border-color: var(--line); }
 .link:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-soft); }
@@ -326,14 +341,41 @@ dialog {
 dialog[open] { animation: pop 0.25s var(--ease); }
 dialog::backdrop { background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
 @keyframes pop { from { opacity: 0; transform: translateY(16px) scale(0.97); } }
-dialog form, .confirm { padding: 2.1rem; display: grid; gap: 1.2rem; }
+dialog form, .confirm {
+  padding: 2rem;
+  display: grid;
+  gap: 1.4rem;
+}
 dialog h2 { font-size: 1.9rem; color: #fff; }
-.confirm p { color: var(--muted); font-size: 1.05rem; }
-label { display: grid; gap: 0.45rem; font-weight: 700; font-size: 0.92rem; color: #fff; }
+.confirm p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.confirm h2 {
+  color: var(--bad);
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+label {
+  display: grid;
+  gap: 0.55rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
 label input { font-weight: 400; }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
 .form-error { color: var(--bad); min-height: 1.2em; font-size: 0.92rem; font-weight: 700; }
-.form-actions { display: flex; justify-content: flex-end; gap: 0.9rem; margin-top: 0.5rem; }
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
 
 /* ---------- Toasts ---------- */
 .toasts { position: fixed; z-index: 1000; right: 1.5rem; bottom: 1.5rem; display: grid; gap: 0.75rem; width: min(400px, calc(100vw - 3rem)); pointer-events: none; }
@@ -528,7 +570,7 @@ code { background: var(--gold-soft); color: var(--gold); padding: 0.15rem 0.5rem
 .flag-emoji { font-size: 1rem; line-height: 1; flex: none; }
 
 /* Cuisine filter chips (dark, not browser-default white buttons) */
-.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+.chips { display: flex; flex-wrap: wrap; align-items: center;gap: 0.65rem; margin-bottom: 1rem; }
 .chip {
   display: inline-flex; align-items: center; gap: 0.5rem;
   background: var(--surface); color: var(--ink); border: 1px solid var(--line);
@@ -537,7 +579,13 @@ code { background: var(--gold-soft); color: var(--gold); padding: 0.15rem 0.5rem
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 .chip:hover { border-color: var(--gold); }
-.chip.active { background: var(--gold); color: var(--on-gold); border-color: var(--gold); }
+.chip.active {
+  background: var(--gold);
+  color: var(--on-gold);
+  border-color: var(--gold);
+  font-weight: 700;
+  box-shadow: 0 0 0 2px var(--gold-soft);
+}
 .chip-count { color: var(--muted); font-variant-numeric: tabular-nums; }
 .chip.active .chip-count { color: var(--on-gold); opacity: 0.7; }
 
