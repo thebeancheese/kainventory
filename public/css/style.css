@@ -440,7 +440,18 @@ label input { font-weight: 400; }
 .card:hover::before { background: var(--gold); }
 .card h3 { font: 700 1.15rem 'DM Sans', sans-serif; margin: 0 0 0.5rem; color: #fff; letter-spacing: 0; }
 .card p { color: var(--muted); font-size: 0.98rem; }
+/* About page card improvements */
+.content .card {
+  padding: 1.75rem;
+}
 
+.content .card h3 {
+  margin-bottom: 0.75rem;
+}
+
+.content .card p {
+  line-height: 1.7;
+}
 .person { text-align: center; display: grid; justify-items: center; gap: 0.8rem; padding: 2rem 1.5rem; }
 .person h3 { margin: 0; font-size: 1.2rem; }
 .avatar.big {
@@ -469,10 +480,32 @@ label input { font-weight: 400; }
 }
 .steps li > :first-child { color: #fff; font-weight: 700; font-size: 1.1rem; padding-top: 0.45rem; }
 .steps span { color: var(--muted); font-size: 0.98rem; max-width: 62ch; }
+.content .steps li {
+  padding-bottom: 1.75rem;
+}
 
+.content .steps li:last-child {
+  padding-bottom: 0;
+}
+
+.content .steps span {
+  line-height: 1.7;
+}
 .tech td { vertical-align: top; }
 .tech td:first-child { white-space: nowrap; width: 1%; font-weight: 700; color: var(--gold); }
+/* About page technology table */
+.content .tech {
+  border-spacing: 0 8px;
+}
 
+.content .tech td {
+  padding: 1rem 1.25rem;
+  line-height: 1.6;
+}
+
+.content .tech td:first-child {
+  min-width: 180px;
+}
 /* ---------- Contact / panels ---------- */
 .contact-layout { grid-template-columns: 1.4fr 1fr; align-items: start; gap: 2rem; }
 .panel {
@@ -498,7 +531,7 @@ label input { font-weight: 400; }
 .teaser:hover .teaser-link { gap: 0.7rem; }
 
 /* ---------- Content sections ---------- */
-.content { max-width: 1240px; margin: 0 auto; padding: 3rem clamp(1.5rem, 5vw, 4rem) 4rem; display: grid; gap: 3.5rem; }
+.content { max-width: 1240px; margin: 0 auto; padding: 3rem clamp(1.5rem, 5vw, 4rem) 4rem; display: grid; gap: 3rem; }
 .content h2 { font-size: clamp(1.8rem, 4vw, 2.2rem); margin-bottom: 1.25rem; }
 .section-note { color: var(--muted); margin: 0.3rem 0 1.25rem; font-weight: 600; }
 code { background: var(--gold-soft); color: var(--gold); padding: 0.15rem 0.5rem; border-radius: 6px; font-size: 0.88em; font-weight: 700; }

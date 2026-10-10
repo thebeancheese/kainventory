@@ -550,8 +550,15 @@ function initContactPage() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = $('#sendBtn');
+
+    if (btn.disabled) return;
+
+    const originalText = btn.textContent;
+
     $('#contactError').textContent = '';
     btn.disabled = true;
+    btn.textContent = 'Sending...';
+    btn.setAttribute('aria-busy', 'true');
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -567,6 +574,8 @@ function initContactPage() {
       notify('Message not sent', err.message || 'Please try again.', 'error');
     } finally {
       btn.disabled = false;
+      btn.textContent = originalText;
+      btn.removeAttribute('aria-busy');
     }
   });
 }

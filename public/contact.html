@@ -34,57 +34,76 @@
   </header>
 
   <!-- Main Constrained Content Container -->
-  <main class="page" style="padding-top: 3rem; padding-bottom: 3rem;">
+  <main class="page contact-page">
+  <div class="contact-layout">
     
     <!-- Contact Form Card -->
-    <section class="card" style="margin-bottom: 2rem;">
-      <h2 style="margin-bottom: 1.5rem;">Send a message</h2>
-      <form id="contactForm">
-        <div style="margin-bottom: 1.25rem;">
-          <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Your name</label>
-          <input type="text" id="name" name="name" required style="width: 100%; padding: 0.75rem; background: var(--surface-subtle, #1a1a1e); border: 1px solid var(--line); border-radius: 6px; color: inherit;">
-        </div>
-        <div style="margin-bottom: 1.25rem;">
-          <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email address</label>
-          <input type="email" id="email" name="email" required style="width: 100%; padding: 0.75rem; background: var(--surface-subtle, #1a1a1e); border: 1px solid var(--line); border-radius: 6px; color: inherit;">
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-          <label for="message" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Message</label>
-          <textarea id="message" name="message" rows="5" required style="width: 100%; padding: 0.75rem; background: var(--surface-subtle, #1a1a1e); border: 1px solid var(--line); border-radius: 6px; color: inherit; resize: vertical;"></textarea>
-        </div>
+    
+    <section class="panel contact-form-panel">
+      <h2>Send a message</h2>
+      <p class="form-hint">
+        Fields marked with <span class="required-mark">*</span> are required.
+      </p>
+
+      <form id="contactForm" class="contact-form">
+
+        <label for="name">
+          Your name <span class="required-mark" aria-hidden="true">*</span>
+        </label>
+        <input type="text" id="name" name="name"
+              required maxlength="100"
+              autocomplete="name">
+
+        <label for="email">
+          Email address <span class="required-mark" aria-hidden="true">*</span>
+        </label>
+        <input type="email" id="email" name="email"
+              required autocomplete="email">
+
+        <label for="message">
+          Message <span class="required-mark" aria-hidden="true">*</span>
+        </label>
+        <textarea id="message" name="message"
+                  rows="6" required></textarea>
+
         <p id="contactError" class="form-error" role="alert"></p>
-        <button id="sendBtn" type="submit" class="btn" style="background: var(--amber, #f59e0b); color: #000; font-weight: 600; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer;">Send message</button>
+
+        <button id="sendBtn" type="submit" class="btn">
+          Send message
+        </button>
+
       </form>
     </section>
-
+    
     <!-- Course Info Cards Grid / Stack -->
-    <div style="display: grid; gap: 1.5rem;">
+    
+    <aside class="info-stack">
       <div class="card">
-        <h3 style="font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Course</h3>
-        <p style="font-size: 1.1rem; font-weight: 500;">6ADDBASE - Advanced Database using MongoDB</p>
+        <h3>Course</h3>
+        <p>6ADDBASE - Advanced Database using MongoDB</p>
       </div>
 
       <div class="card">
-        <h3 style="font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Section</h3>
-        <p style="font-size: 1.1rem; font-weight: 500;">WD-303</p>
+        <h3>Section</h3>
+        <p>WD-303</p>
       </div>
 
       <div class="card">
-        <h3 style="font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">School</h3>
-        <p style="font-size: 1.1rem; font-weight: 500;">Holy Angel University, Angeles City</p>
+        <h3>School</h3>
+        <p>Holy Angel University, Angeles City</p>
       </div>
 
       <div class="card">
-        <h3 style="font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Instructor</h3>
-        <p style="font-size: 1.1rem; font-weight: 500;">Raphael P. Aguipo</p>
+        <h3>Instructor</h3>
+        <p>Raphael P. Aguipo</p>
       </div>
-    </div>
+    </aside>
 
   </main>
 
   <!-- Footer -->
-  <footer style="text-align: center; padding: 2rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem;">
-    <p>6ADDBASE Final Project · WD-303 · Holy Angel University</p>
+  <footer class="site-footer">
+    6ADDBASE Final Project &middot; WD-303 &middot; Holy Angel University
   </footer>
 
   <div id="toasts" class="toasts" aria-live="polite"></div>

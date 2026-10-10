@@ -33,7 +33,10 @@
       <h1>About Kainventory</h1>
     </div>
     <p class="muted" style="font-size: 1.15rem; max-width: 65ch;">
-      Kainventory is an enterprise-grade restaurant management and directory system engineered to simplify food service tracking, establishment listings, and operational reviews.
+      Kainventory is a web-based restaurant management and directory system
+      designed to make organizing restaurant information easier. It allows
+      users to browse, register, update, and manage restaurant records
+      through one accessible platform.
     </p>
   </div>
 </header>
@@ -42,22 +45,52 @@
       <!-- Features -->
       <section>
         <h2>Core platform capabilities</h2>
+        
         <div class="card-grid">
-          <article class="card"><h3>Directory browsing</h3><p>Explore all registered dining venues with instant multi-parameter filtering by name, cuisine, or location.</p></article>
-          <article class="card"><h3>Establishment registration</h3><p>Seamlessly onboard new venues with full metadata including cuisine types, addresses, ratings, and contact lines.</p></article>
-          <article class="card"><h3>Record updating</h3><p>Instantly modify operational details, adjust ratings, or update contact channels in real time.</p></article>
-          <article class="card"><h3>Listing management</h3><p>Safely archive or remove outdated listings with immediate validation and system alerts.</p></article>
+          <article class="card">
+            <h3>Restaurant Directory</h3>
+            <p>Browse registered restaurants and search by name, cuisine, location, or restaurant ID.</p>
+          </article>
+
+          <article class="card">
+            <h3>Restaurant Registration</h3>
+            <p>Add new restaurants with their name, cuisine, address, rating, and contact information.</p>
+          </article>
+
+          <article class="card">
+            <h3>Record Management</h3>
+            <p>Update existing restaurant information to keep records accurate and organized.</p>
+          </article>
+
+          <article class="card">
+            <h3>Restaurant Removal</h3>
+            <p>Remove outdated or incorrect records with a confirmation step to prevent accidental deletion.</p>
+          </article>
         </div>
+
       </section>
 
       <!-- How it works -->
       <section>
         <h2>How the system operates</h2>
+        
         <ol class="steps">
-          <li><strong>Client Interface</strong><span>Interacting through secure web dashboards to query or submit restaurant updates.</span></li>
-          <li><strong>Application Server</strong><span>Processing requests, validating payloads, and executing business logic securely.</span></li>
-          <li><strong>Secure Storage</strong><span>Persisting structured venue records safely across scalable high-performance document data stores.</span></li>
+          <li>
+            <strong>Client Interface</strong>
+            <span>Users interact with Kainventory through its website to browse and manage restaurant records.</span>
+          </li>
+
+          <li>
+            <strong>Application Server</strong>
+            <span>Node.js and Express process requests, validate submitted information, and communicate with the database.</span>
+          </li>
+
+          <li>
+            <strong>Database Storage</strong>
+            <span>MongoDB Atlas stores restaurant information and makes it available when users search, add, edit, or delete records.</span>
+          </li>
         </ol>
+
       </section>
 
       <!-- Technologies -->
@@ -65,14 +98,36 @@
         <h2>Technology infrastructure</h2>
         <div class="table-wrap">
           <table class="tech">
-            <thead><tr><th>Layer</th><th>Technology &amp; Purpose</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Technology</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td><strong>Storage Layer</strong></td><td>High-reliability document storage ensuring rapid lookups and atomic record mutations.</td></tr>
-              <tr><td><strong>Runtime Engine</strong></td><td>Asynchronous server environment powering fast backend route execution.</td></tr>
-              <tr><td><strong>API Framework</strong></td><td>Robust server routing handling RESTful CRUD transactions and client requests.</td></tr>
-              <tr><td><strong>User Interface</strong></td><td>Modern, responsive design built with semantic HTML5, CSS3, and dynamic JavaScript.</td></tr>
+              <tr>
+                <td><strong>MongoDB Atlas</strong></td>
+                <td>Cloud database used to store and manage restaurant records.</td>
+              </tr>
+              <tr>
+                <td><strong>Node.js</strong></td>
+                <td>JavaScript runtime used to execute the application's backend.</td>
+              </tr>
+              <tr>
+                <td><strong>Express.js</strong></td>
+                <td>Backend framework used to handle API requests and restaurant CRUD operations.</td>
+              </tr>
+              <tr>
+                <td><strong>HTML, CSS, JavaScript</strong></td>
+                <td>Frontend technologies used to build the interface and interactive features.</td>
+              </tr>
+              <tr>
+                <td><strong>Render</strong></td>
+                <td>Cloud hosting platform used to deploy the application online.</td>
+              </tr>
             </tbody>
           </table>
+
         </div>
       </section>
 
