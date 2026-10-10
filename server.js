@@ -3,7 +3,10 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
-
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
+const { rateLimit } = require('express-rate-limit');
 // Settings (override in .env)
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017';
@@ -13,12 +16,65 @@ const COLLECTION = process.env.COLLECTION || 'restaurants';
 // App setup (app must exist before any route is added)
 const app = express();
 app.use(express.json());
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error('SESSION_SECRET is missing from .env');
+}
+
+// Render uses a reverse proxy for HTTPS
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+app.use(session({
+  name: 'kainventory.sid',
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+
+  store: MongoStore.create({
+    mongoUrl: MONGO_URI,
+    dbName: DB_NAME,
+    collectionName: 'sessions',
+    ttl: 60 * 60 * 8
+  }),
+
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 8
+  }
+}));
+
+/* CSRF Protection */
+function checkSameOrigin(req, res, next) {
+  const safeMethods = ['GET', 'HEAD', 'OPTIONS'];
+
+  if (safeMethods.includes(req.method)) {
+    return next();
+  }
+
+  const expectedOrigin = `${req.protocol}://${req.get('host')}`;
+  const origin = req.get('origin');
+
+  if (origin !== expectedOrigin) {
+    return res.status(403).json({
+      error: 'Request blocked for security reasons.'
+    });
+  }
+
+  next();
+}
+
+app.use('/api', checkSameOrigin);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Collection handles, set after connecting
 let restaurants;
 let messages;
-
+let admins;
 // Turn an address (string or object) into text
 function addressToText(address) {
   if (!address) return '';
@@ -72,6 +128,126 @@ async function nextRestaurantId() {
 // Escape user text for regex search
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const validId = (id) => ObjectId.isValid(id);
+
+/* Admin Authentication */
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: {
+    error: 'Too many login attempts. Please try again in 15 minutes.'
+  }
+});
+
+// Check login status
+app.get('/api/admin/session', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+
+  res.json({
+    loggedIn: Boolean(req.session.adminId),
+    username: req.session.username || null
+  });
+});
+
+// Login
+app.post('/api/admin/login', loginLimiter, async (req, res) => {
+  try {
+    const username = req.body?.username;
+    const password = req.body?.password;
+
+    if (
+      typeof username !== 'string' ||
+      typeof password !== 'string' ||
+      !username.trim() ||
+      !password ||
+      username.length > 100 ||
+      password.length > 256
+    ) {
+      return res.status(400).json({
+        error: 'Please enter a valid username and password.'
+      });
+    }
+
+    const admin = await admins.findOne({
+      username: username.trim()
+    });
+
+    const valid = admin
+      ? await bcrypt.compare(password, admin.passwordHash)
+      : false;
+
+    if (!valid) {
+      return res.status(401).json({
+        error: 'Invalid username or password.'
+      });
+    }
+
+    req.session.regenerate((err) => {
+      if (err) {
+        return res.status(500).json({
+          error: 'Could not start login session.'
+        });
+      }
+
+      req.session.adminId = String(admin._id);
+      req.session.username = admin.username;
+
+      req.session.save((err) => {
+        if (err) {
+          return res.status(500).json({
+            error: 'Could not save login session.'
+          });
+        }
+
+        res.json({
+          message: 'Login successful.',
+          username: admin.username
+        });
+      });
+    });
+
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({
+      error: 'Could not log in.'
+    });
+  }
+});
+
+// Logout
+app.post('/api/admin/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({
+        error: 'Could not log out.'
+      });
+    }
+
+    res.clearCookie('kainventory.sid', {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+
+    res.json({
+      message: 'Logged out successfully.'
+    });
+  });
+});
+
+// Protect admin-only operations
+function requireAdmin(req, res, next) {
+  if (!req.session.adminId) {
+    return res.status(401).json({
+      error: 'Admin login required.'
+    });
+  }
+
+  next();
+}
 
 // READ: cuisine list with the number of restaurants in each (MongoDB $group)
 app.get('/api/cuisines', async (req, res) => {
@@ -199,7 +375,7 @@ app.get('/api/stats', async (req, res) => {
 });
 
 // CREATE: insertOne
-app.post('/api/restaurants', async (req, res) => {
+app.post('/api/restaurants', requireAdmin, async (req, res) => {
   const { value, error } = cleanBody(req.body);
   if (error) return res.status(400).json({ error });
   try {
@@ -213,7 +389,7 @@ app.post('/api/restaurants', async (req, res) => {
 });
 
 // UPDATE: updateOne
-app.put('/api/restaurants/:id', async (req, res) => {
+app.put('/api/restaurants/:id', requireAdmin, async (req, res) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: 'Invalid restaurant id.' });
   const { value, error } = cleanBody(req.body);
   if (error) return res.status(400).json({ error });
@@ -228,7 +404,7 @@ app.put('/api/restaurants/:id', async (req, res) => {
 });
 
 // DELETE: deleteOne
-app.delete('/api/restaurants/:id', async (req, res) => {
+app.delete('/api/restaurants/:id', requireAdmin, async (req, res) => {
   if (!validId(req.params.id)) return res.status(400).json({ error: 'Invalid restaurant id.' });
   try {
     const result = await restaurants.deleteOne({ _id: new ObjectId(req.params.id) });
@@ -265,6 +441,7 @@ MongoClient.connect(MONGO_URI)
     const db = client.db(DB_NAME);
     restaurants = db.collection(COLLECTION);
     messages = db.collection('messages');
+    admins = db.collection('admins');
     console.log(`Connected to MongoDB: ${DB_NAME}.${COLLECTION}`);
     app.listen(PORT, () => console.log(`Kainventory running at http://localhost:${PORT}`));
   })

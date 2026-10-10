@@ -169,6 +169,39 @@ async function loadPlaceStats() {
   }
 }
 
+/* Admin login status */
+let isAdmin = false;
+
+async function checkAdminSession() {
+  try {
+    const res = await fetch('/api/admin/session', {
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+
+    if (!res.ok) throw new Error('Session check failed.');
+
+    const data = await res.json();
+    isAdmin = data.loggedIn === true;
+  } catch (err) {
+    isAdmin = false;
+    console.error('Could not check admin session:', err);
+  }
+
+  const addBtn = $('#addBtn');
+  const adminLink = $('#adminLink');
+  const logoutBtn = $('#logoutBtn');
+
+  if (addBtn) addBtn.hidden = !isAdmin;
+  if (adminLink) adminLink.hidden = isAdmin;
+  if (logoutBtn) logoutBtn.hidden = !isAdmin;
+
+  document.querySelectorAll('[data-action="edit"], [data-action="delete"]')
+    .forEach(btn => {
+      btn.hidden = !isAdmin;
+    });
+}
+
 // Restaurant page state
 const PAGE_SIZE = 10;
 const state = { page: 1, pages: 1, search: '', editingId: null, rows: [], highlightId: null };
@@ -222,10 +255,12 @@ function renderTable({ data, total, page, pages }) {
       <td data-label="Place">${esc(r.address || r.borough) || '-'}</td>
       <td data-label="Rating">${r.rating === null ? '-' : `<span class="rating ${ratingClass(r.rating)}">${esc(r.rating.toFixed(1))}</span>`}</td>
       <td data-label="Contact">${esc(r.contact) || '-'}</td>
-      <td class="right actions">
-        <button class="link" data-action="edit" data-id="${esc(r._id)}">Edit</button>
-        <button class="link danger" data-action="delete" data-id="${esc(r._id)}">Delete</button>
-      </td>
+      ${isAdmin ? `
+        <td class="right actions">
+          <button class="link" data-action="edit" data-id="${esc(r._id)}">Edit</button>
+          <button class="link danger" data-action="delete" data-id="${esc(r._id)}">Delete</button>
+        </td>
+      ` : '<td class="right actions">View only</td>'}
     </tr>`).join('');
 
   state.highlightId = null;
@@ -355,24 +390,24 @@ async function saveRestaurant(event) {
     contact: form.contact.value
   };
 
-const name = payload.name.trim();
-const editing = Boolean(state.editingId);
+  const name = payload.name.trim();
+  const editing = Boolean(state.editingId);
 
-const error = validateRestaurant(payload);
+  const error = validateRestaurant(payload);
 
-if (error) {
-  $('#formError').textContent = error;
-  return;
-}
+  if (error) {
+    $('#formError').textContent = error;
+    return;
+  }
 
-$('#formError').textContent = '';
+  $('#formError').textContent = '';
 
-const saveBtn = $('#saveBtn');
-const originalText = saveBtn.textContent;
-form.dataset.saving = 'true';
-saveBtn.disabled = true;
-saveBtn.textContent = 'Saving...';
-saveBtn.setAttribute('aria-busy', 'true');
+  const saveBtn = $('#saveBtn');
+  const originalText = saveBtn.textContent;
+  form.dataset.saving = 'true';
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
+  saveBtn.setAttribute('aria-busy', 'true');
 
 
   try {
@@ -483,10 +518,17 @@ function showDetails(r) {
     </dl>
     <div class="form-actions">
       <button type="button" class="btn ghost" data-close>Close</button>
-      <button type="button" class="btn" data-edit>Edit restaurant</button>
+      ${isAdmin ? '<button type="button" class="btn" data-edit>Edit restaurant</button>' : ''}
     </div>`;
   dlg.querySelector('[data-close]').onclick = () => dlg.close();
-  dlg.querySelector('[data-edit]').onclick = () => { dlg.close(); openForm(r); };
+  const editBtn = dlg.querySelector('[data-edit]');
+
+  if (editBtn) {
+    editBtn.onclick = () => {
+      dlg.close();
+      openForm(r);
+    };
+  }
   dlg.showModal();
 }
 
@@ -537,9 +579,28 @@ function initRestaurantPage() {
     })
   );
 
-  loadRestaurants();
-  loadCuisineChips();
+  checkAdminSession().then(() => {
+    loadRestaurants();
+    loadCuisineChips();
+  });
+  const logoutBtn = $('#logoutBtn');
 
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/admin/logout', {
+          method: 'POST',
+          credentials: 'same-origin'
+        });
+
+        if (!res.ok) throw new Error('Could not log out.');
+
+        window.location.href = 'login.html';
+      } catch (err) {
+        notify('Logout failed', err.message, 'error');
+      }
+    });
+  }
   // Header "Add restaurant" link (restaurants.html#add) opens the form straight away
   if (location.hash === '#add') openForm();
 }

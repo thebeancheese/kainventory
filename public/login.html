@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Login | Kainventory</title>
+  <link rel="icon" href="images/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Kainventory home">
+      <img class="brand-logo" src="images/logo.png" alt="Kainventory Logo">
+    </a>
+
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="restaurants.html">Restaurants</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="login-page">
+    <section class="login-card">
+      <h1>Admin Login</h1>
+      <p class="muted">Sign in to manage restaurant records.</p>
+
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input id="username" name="username"
+               type="text" autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input id="password" name="password"
+               type="password" autocomplete="current-password" required>
+
+        <p id="loginError" class="form-error" role="alert"></p>
+
+        <button class="btn" id="loginBtn" type="submit">
+          Sign in
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    &copy; 2026 Kainventory
+  </footer>
+
+  <script src="js/login.js"></script>
+</body>
+</html>
