@@ -12,8 +12,7 @@
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="Kainventory home">
       <img class="brand-logo" src="images/logo.png" alt="Kainventory Logo">
-      <span class="brand-name">Byte & Bite
-</span>
+      <span class="brand-name">Kainventory</span>
     </a>
     <nav aria-label="Main">
       <a href="index.html">Home</a>
@@ -41,7 +40,7 @@
     <!-- Contact Form Card -->
     <section class="card" style="margin-bottom: 2rem;">
       <h2 style="margin-bottom: 1.5rem;">Send a message</h2>
-      <form action="/contact" method="POST">
+      <form id="contactForm">
         <div style="margin-bottom: 1.25rem;">
           <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Your name</label>
           <input type="text" id="name" name="name" required style="width: 100%; padding: 0.75rem; background: var(--surface-subtle, #1a1a1e); border: 1px solid var(--line); border-radius: 6px; color: inherit;">
@@ -54,7 +53,8 @@
           <label for="message" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Message</label>
           <textarea id="message" name="message" rows="5" required style="width: 100%; padding: 0.75rem; background: var(--surface-subtle, #1a1a1e); border: 1px solid var(--line); border-radius: 6px; color: inherit; resize: vertical;"></textarea>
         </div>
-        <button type="submit" class="btn" style="background: var(--amber, #f59e0b); color: #000; font-weight: 600; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer;">Send message</button>
+        <p id="contactError" class="form-error" role="alert"></p>
+        <button id="sendBtn" type="submit" class="btn" style="background: var(--amber, #f59e0b); color: #000; font-weight: 600; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer;">Send message</button>
       </form>
     </section>
 
@@ -62,7 +62,7 @@
     <div style="display: grid; gap: 1.5rem;">
       <div class="card">
         <h3 style="font-size: 1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Course</h3>
-        <p style="font-size: 1.1rem; font-weight: 500;">6ADBBASE - Advanced Database using MongoDB</p>
+        <p style="font-size: 1.1rem; font-weight: 500;">6ADDBASE - Advanced Database using MongoDB</p>
       </div>
 
       <div class="card">
@@ -85,8 +85,10 @@
 
   <!-- Footer -->
   <footer style="text-align: center; padding: 2rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem;">
-    <p>6ADBBASE Final Project · WD-303 · Holy Angel University</p>
+    <p>6ADDBASE Final Project · WD-303 · Holy Angel University</p>
   </footer>
 
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <script src="js/app.js"></script>
 </body>
 </html>

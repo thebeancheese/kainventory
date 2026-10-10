@@ -1,7 +1,7 @@
 {
   "name": "kaininventory",
   "version": "1.0.0",
-  "description": "Kainventory / Byte & Bite - A Restaurant Management System (MongoDB + Express)",
+  "description": "Kainventory - A Restaurant Management System (MongoDB + Express)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

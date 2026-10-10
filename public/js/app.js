@@ -247,7 +247,7 @@ async function loadCuisineChips() {
         ${cuisineIcon(c._id)} ${esc(c._id)} <span class="chip-count">${c.count}</span>
       </button>`).join('');
 
-    box.addEventListener('click', (e) => {
+    box.onclick = (e) => {
       const chip = e.target.closest('.chip');
       if (!chip) return;
       const wasActive = chip.classList.contains('active');
@@ -257,7 +257,7 @@ async function loadCuisineChips() {
       state.search = search.value.trim();
       state.page = 1;
       loadRestaurants();
-    });
+    };
   } catch (err) {
     console.error(err);
   }
@@ -319,6 +319,8 @@ async function saveRestaurant(event) {
       state.page = 1;
     }
     loadRestaurants();
+    loadDbStatus();
+    loadCuisineChips();
   } catch (err) {
     $('#formError').textContent = err.message || 'Could not save. Try again.';
     notify('Could not save', err.message || 'Please try again.', 'error');
@@ -353,6 +355,8 @@ async function deleteRestaurant(id) {
     notify('Restaurant deleted', `"${name}" was removed.`, 'delete');
     if (state.rows.length === 1 && state.page > 1) state.page -= 1;
     loadRestaurants();
+    loadDbStatus();
+    loadCuisineChips();
   } catch (err) {
     notify('Could not delete', err.message || 'Please try again.', 'error');
   }
