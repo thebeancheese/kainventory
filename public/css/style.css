@@ -1276,3 +1276,64 @@ nav .nav-logout:hover {
 .admin-actions [hidden] {
   display: none !important;
 }
+
+/* Technology Infrastructure - Mobile */
+@media (max-width: 600px) {
+
+  .tech {
+    display: block;
+    width: 100%;
+    border: none;
+  }
+
+  .tech thead {
+    display: none;
+  }
+
+  .tech tbody {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .tech tr {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px;
+    background: #1e1d17;
+    border: 1px solid #302d23;
+    border-left: 4px solid var(--gold);
+    border-radius: 12px;
+    text-align: left;
+  }
+
+  .tech td {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  .tech td:first-child {
+    color: var(--gold);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .tech td:last-child {
+    color: #c5c0b6;
+    font-size: 14px;
+  }
+
+  .tech td::before {
+    display: none;
+  }
+
+  .tech td strong {
+    color: inherit;
+  }
+}
