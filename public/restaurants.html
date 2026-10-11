@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,30 +8,41 @@
   <link rel="icon" href="images/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <!-- Navigation -->
-<header class="site-header">
-  <a class="brand" href="index.html" aria-label="Kainventory home">
-    <img class="brand-logo" src="images/logo.png" alt="Kainventory Logo">
-  </a>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Kainventory home">
+      <img class="brand-logo" src="images/logo.png" alt="Kainventory Logo">
+    </a>
 
-  <div class="header-status" id="dbStatus" aria-live="polite">
-    <span class="dot"></span>
-    <span id="dbStatusText">Connecting…</span>
-  </div>
+    <div class="header-status" id="dbStatus" aria-live="polite">
+      <span class="dot"></span>
+      <span id="dbStatusText">Connecting…</span>
+    </div>
 
-  <nav aria-label="Main">
-    <a href="index.html">Home</a>
-    <a href="restaurants.html" class="active">Restaurants</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-    <a href="login.html" id="adminLink">Admin Login</a>
-    <button type="button" id="logoutBtn" class="nav-logout" hidden>Logout</button>
-  </nav>
-</header>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="restaurants.html" class="active">Restaurants</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="admin-actions">
+      <a href="login.html" id="adminLink" class="admin-login">
+        Admin Login
+      </a>
+
+      <button type="button" id="logoutBtn" class="nav-logout" hidden>
+        Logout
+      </button>
+    </div>
+  </header>
 
 
   <main class="page">
@@ -46,8 +58,12 @@
     <!-- Search -->
     <div class="toolbar">
       <div class="search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="search" type="search" placeholder="Search restaurants..." aria-label="Search restaurants" autocomplete="off">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input id="search" type="search" placeholder="Search restaurants..." aria-label="Search restaurants"
+          autocomplete="off">
         <div class="chips" id="cuisineChips" aria-label="Filter by cuisine"></div>
       </div>
     </div>
@@ -57,7 +73,13 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th><th>Restaurant</th><th>Cuisine</th><th>Place</th><th>Rating</th><th>Contact</th><th class="right">Actions</th>
+            <th>ID</th>
+            <th>Restaurant</th>
+            <th>Cuisine</th>
+            <th>Place</th>
+            <th>Rating</th>
+            <th>Contact</th>
+            <th class="right">Actions</th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -86,9 +108,7 @@
 
       <label>
         <span>Cuisine <span class="required-mark" aria-hidden="true">*</span></span>
-        <input name="cuisine" required maxlength="60"
-              placeholder="Filipino, Japanese, Italian..."
-              autocomplete="off">
+        <input name="cuisine" required maxlength="60" placeholder="Filipino, Japanese, Italian..." autocomplete="off">
       </label>
 
       <label>Address
@@ -128,9 +148,10 @@
   <div id="toasts" class="toasts" aria-live="polite"></div>
 
   <footer class="site-footer">
-  <p>&copy; 2026 Kainventory. All rights reserved.</p>
-</footer>
+    <p>&copy; 2026 Kainventory. All rights reserved.</p>
+  </footer>
   <script src="js/cuisine-flags.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

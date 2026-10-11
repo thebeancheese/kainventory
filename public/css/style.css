@@ -1219,3 +1219,60 @@ nav .nav-logout:hover {
 [hidden] {
   display: none !important;
 }
+.admin-actions {
+  display: flex;
+  align-items: center;
+  margin-left: 24px;
+}
+
+.admin-login {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  color: var(--gold);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.admin-login:hover {
+  background: var(--gold);
+  color: #111;
+}
+/* Admin Login and Logout Buttons */
+.admin-actions {
+  display: flex;
+  align-items: center;
+  margin-left: 24px;
+}
+
+.admin-login,
+.admin-actions .nav-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  color: var(--gold);
+  font-size: 0.95rem;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-login:hover,
+.admin-actions .nav-logout:hover {
+  background: var(--gold);
+  color: #111;
+}
+
+.admin-actions [hidden] {
+  display: none !important;
+}
